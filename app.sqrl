@@ -1,0 +1,3 @@
+IMPORT datasqrl.examples.finance.Transaction;
+
+TransactionCount := SELECT cardNo, COUNT(1) AS num_tx FROM Transaction GROUP BY cardNo ORDER BY cardNo ASC;
