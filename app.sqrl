@@ -30,6 +30,3 @@ PatientMetricsHourlyTest := SELECT timeHour, name, avgMetric FROM PatientMetrics
 
 Patients := DISTINCT Patients ON patientId ORDER BY lastUpdated DESC;
 Patients.metrics := JOIN PatientMetricsHourly m ON m.patientId = @.patientId ORDER BY m.timeHour DESC, m.name ASC;
-
-HighIndicatorAlerts := SELECT * FROM EnrichedIndicators
-    WHERE metric > highRange;
