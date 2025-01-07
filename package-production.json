@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "enabled-engines": ["vertx", "postgres", "kafka", "flink"],
+  "profiles": ["datasqrl.profile.default"],
+  "script": {
+    "main": "creditcard-rewards.sqrl",
+    "graphql": "creditcard-rewards.graphqls"
+  },
+  "dependencies": [{
+    "creditcard-data": {
+      "name": "test-data",
+      "version": "1",
+      "variant": "dev"
+    }
+  }]
+}
