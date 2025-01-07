@@ -8,7 +8,7 @@
   },
   "dependencies": [{
     "creditcard-data": {
-      "name": "test-data",
+      "name": "production-data",
       "version": "1",
       "variant": "dev"
     }

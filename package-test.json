@@ -8,9 +8,12 @@
   },
   "dependencies": [{
     "creditcard-data": {
-      "name": "creditcard-local",
+      "name": "test-data",
       "version": "1",
       "variant": "dev"
     }
-  }]
+  }],
+  "test-runner": {
+    "delay-sec": 60
+  }
 }
