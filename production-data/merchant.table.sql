@@ -1,0 +1,1 @@
+../test-data/merchant.table.sql

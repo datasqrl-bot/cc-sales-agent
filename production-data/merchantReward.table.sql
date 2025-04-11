@@ -1,0 +1,1 @@
+../test-data/merchantreward.table.sql
