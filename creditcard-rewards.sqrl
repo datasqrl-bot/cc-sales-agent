@@ -5,14 +5,15 @@ IMPORT creditcard-data.MerchantReward;
 
 _Merchant :=       DISTINCT Merchant ON merchantId ORDER BY updatedTime DESC;
 _MerchantReward := DISTINCT MerchantReward ON merchantId ORDER BY updatedTime DESC;
-_CardAssignment := DISTINCT CardAssignment ON cardNo ORDER BY timestamp DESC;
+_CardAssignment := DISTINCT CardAssignment ON cardNo ORDER BY `timestamp` DESC;
 
 /* Part 1: Compute customer rewards */
-_CustomerTransaction := SELECT t.transactionId, t.cardNo, t.time, t.amount, m.name AS merchantName,
+_CustomerTransaction := SELECT t.transactionId, t.cardNo, t.`time`, t.amount, m.name AS merchantName,
                               m.merchantId, m.category, c.customerid, c.cardType
                        FROM Transaction t
                        TEMPORAL JOIN _CardAssignment c ON t.cardNo = c.cardNo
-                       TEMPORAL JOIN _Merchant m ON t.merchantId = m.merchantid ORDER BY t.time DESC;
+                       TEMPORAL JOIN _Merchant m ON t.merchantId = m.merchantid
+                       ORDER BY t.`time` DESC;
 
 _CustomerTransactionRewards := SELECT t.*, r.rewardsByCard AS rewards FROM _CustomerTransaction t
                               TEMPORAL JOIN _MerchantReward r ON r.merchantId = t.merchantId;
@@ -20,15 +21,15 @@ _CustomerTransactionRewards := SELECT t.*, r.rewardsByCard AS rewards FROM _Cust
 _CustomerTransactionRewardsByCard := SELECT t.*, t.amount * (r.rewardPercentage / 100.0) as reward,
                                             r.cardType AS rewardCardType
                                     FROM _CustomerTransactionRewards t JOIN t.rewards r
-                                    WHERE timestampToEpoch(t.time) <= r.expirationTimestamp
-                                      AND timestampToEpoch(t.time) >= r.startTimestamp;
+                                    WHERE `timestamp`ToEpoch(t.time) <= r.expiration`timestamp`
+                                      AND `timestamp`ToEpoch(t.time) >= r.start`timestamp`;
 
 CustomerRewards := SELECT transactionId, customerId, cardNo, cardType, time, amount, reward, merchantName
                   FROM _CustomerTransactionRewardsByCard
                   WHERE cardType = rewardCardType;
 
 /* Part 2a: Query and Analyze Rewards */
-Rewards(@customerid: BIGINT, @fromTime: TIMESTAMP, @toTime: TIMESTAMP) :=
+Rewards(@customerid: BIGINT, @fromTime: `timestamp`, @toTime: `timestamp`) :=
 SELECT * FROM CustomerRewards WHERE customerid = @customerid AND @fromTime <= time AND @toTime > time
 ORDER BY time DESC;
 
@@ -47,7 +48,7 @@ _CustomerPotentialRewards := SELECT transactionId, customerId, rewardCardType, t
                             FROM _CustomerTransactionRewardsByCard
                             WHERE cardType != rewardCardType;
 
-PotentialRewards(@customerid: BIGINT, @cardType: STRING, @fromTime: TIMESTAMP, @toTime: TIMESTAMP) :=
+PotentialRewards(@customerid: BIGINT, @cardType: STRING, @fromTime: `timestamp`, @toTime: `timestamp`) :=
 SELECT * FROM _CustomerPotentialRewards WHERE customerid = @customerid AND @fromTime <= time AND @toTime > time
 AND rewardCardType = @cardType ORDER BY time DESC;
 
@@ -64,7 +65,7 @@ PotentialRewardsByDay := SELECT customerId, rewardCardType AS cardType, endOfDay
 /* =======TEST CASES======== */
 
 /*+test */
-CardAssignmentTest := SELECT * FROM CardAssignment ORDER BY cardNo DESC, timestamp DESC LIMIT 5;
+CardAssignmentTest := SELECT * FROM CardAssignment ORDER BY cardNo DESC, `timestamp` DESC LIMIT 5;
 
 /*+test */
 CustomerRewardsTest := SELECT * FROM CustomerRewards ORDER BY cardType DESC, time DESC LIMIT 5;
