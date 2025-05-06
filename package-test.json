@@ -2,8 +2,7 @@
   "version": "1",
   "enabled-engines": ["vertx", "postgres", "kafka", "flink"],
   "script": {
-    "main": "creditcard-rewards.sqrl",
-    "graphql": "creditcard-rewards.graphqls"
+    "main": "creditcard-rewards.sqrl"
   },
   "dependencies": [{
     "creditcard-data": {
