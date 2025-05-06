@@ -1,0 +1,23 @@
+name: Build and test DataSQRL sales agent
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Pull SQRL Docker image
+      run: docker pull datasqrl/cmd:0.6.0
+
+    - name: Run sales-agent Tests
+      working-directory: ./
+      run: |
+        echo "Running test command"
+        docker run -t --rm -e TZ=America/Los_Angeles -v $PWD:/build datasqrl/cmd:0.6.0 test -c package-test.json --snapshots snapshots

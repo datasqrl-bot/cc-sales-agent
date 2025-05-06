@@ -1,11 +1,12 @@
 "An RFC-3339 compliant DateTime Scalar"
 scalar DateTime
+scalar GraphQLBigInteger
 
 type Query {
     """Returns all the rewards that a customer has earned in the given time period"""
     Rewards(
-        """customerid: Customer identifier"""
-        customerid: Int!,
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!,
         """fromTime: RFC-3339 compliant date time scalar. Returns rewards after this time. Use the start of the day only, e.g. 2024-01-19T00:00:00-00:00."""
         fromTime: DateTime!,
         """toTime: RFC-3339 compliant date time scalar. Returns rewards up to this time. Use the start of the day only, e.g. 2024-01-19T00:00:00-00:00."""
@@ -14,8 +15,8 @@ type Query {
 
     """Returns the total awards a customer earned by day starting from the most recent day."""
     RewardsByDay(
-        """customerid: Customer identifier"""
-        customerid: Int!,
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!,
         """limit: The number of days to return starting from most recent to less recent days. For example, if limit is 12 it will return the last 12 days of total rewards earned."""
         limit: Int = 12,
         """offset: The number of days to offset. For example, if offset is 4, it will skip the last 4 days of rewards earned and return the days before that."""
@@ -24,14 +25,14 @@ type Query {
 
     """Returns the total amount of rewards the customer has earned to date and the time since when they eared rewards"""
     TotalReward(
-        """customerid: Customer identifier"""
-        customerid: Int!
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!
     ): TotalReward
 
     """Returns all the potential rewards a customer could have earned in the given time period for the given card type. Use this function to show customers the rewards they would have earned if they had the given card."""
     PotentialRewards(
-        """customerid: Customer identifier"""
-        customerid: Int!,
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!,
         """cardType: The type of card to calculate potential rewards for (i.e. travel, sports, business, or family)"""
         cardType: String!,
         """fromTime: RFC-3339 compliant date time scalar. Returns rewards after this time. Use the start of the day only, e.g. 2024-01-19T00:00:00-00:00."""
@@ -42,8 +43,8 @@ type Query {
 
     """Returns the total awards a customer could have earned for a given card type by day starting from the most recent day. Use this function to show the customer what their reward earnings would have looked like, if they had a given card."""
     PotentialRewardsByDay(
-        """customerid: Customer identifier"""
-        customerid: Int!,
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!,
         """cardType: The type of card to calculate potential rewards for (e.g., travel, sports, business, family)"""
         cardType: String!,
         """limit: The number of days to return starting from most recent to less recent days. For example, if limit is 12 it will return the last 12 days of total rewards earned."""
@@ -54,15 +55,15 @@ type Query {
 
     """Returns the total amount of rewards the customer could have earned for each type of credit card the customer does not yet have. Use this function to determine which credit card type to recommend to a customer."""
     TotalPotentialReward(
-        """customerid: Customer identifier"""
-        customerid: Int!
+        """customerId: Customer identifier"""
+        customerId: GraphQLBigInteger!
     ): [TotalPotentialReward!]
 }
 
 type CustomerRewards {
-    transactionId: Float!
-    customerid: Int!
-    cardNo: Float!
+    transactionId: GraphQLBigInteger!
+    customerId: GraphQLBigInteger!
+    cardNo: String!
     cardType: String!
     time: DateTime!
     amount: Float!
@@ -71,20 +72,20 @@ type CustomerRewards {
 }
 
 type RewardsByDay {
-    customerid: Int!
+    customerId: GraphQLBigInteger!
     timeDay: DateTime!
     total_reward: Float!
 }
 
 type TotalReward {
-    customerid: Int!
+    customerId: GraphQLBigInteger!
     total_reward: Float!
     since_time: DateTime!
 }
 
 type PotentialRewards {
-    transactionId: Float!
-    customerid: Int!
+    transactionId: GraphQLBigInteger!
+    customerId: GraphQLBigInteger!
     rewardCardType: String!
     time: DateTime!
     amount: Float!
@@ -93,14 +94,14 @@ type PotentialRewards {
 }
 
 type PotentialRewardsByDay {
-    customerid: Int!
+    customerId: GraphQLBigInteger!
     cardType: String!
     timeDay: DateTime!
     total_reward: Float!
 }
 
 type TotalPotentialReward {
-    customerid: Int!
+    customerId: GraphQLBigInteger!
     cardType: String!
     total_reward: Float!
     since_time: DateTime!

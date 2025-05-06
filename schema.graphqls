@@ -1,0 +1,80 @@
+type CustomerPotentialRewards {
+  transactionId: GraphQLBigInteger!
+  customerId: GraphQLBigInteger!
+  rewardCardType: String!
+  time: DateTime!
+  amount: Float!
+  reward: Float!
+  merchantName: String!
+}
+
+type CustomerRewards {
+  transactionId: GraphQLBigInteger!
+  customerId: GraphQLBigInteger!
+  cardNo: String!
+  cardType: String!
+  time: DateTime!
+  amount: Float!
+  reward: Float!
+  merchantName: String!
+}
+
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
+"An arbitrary precision signed integer"
+scalar GraphQLBigInteger
+
+type PotentialRewardsByDay {
+  customerId: GraphQLBigInteger!
+  cardType: String!
+  timeDay: DateTime!
+  total_reward: Float!
+}
+
+type Query {
+  """
+  Returns the total rewards a customer could have earned for a given card type by day starting from the most recent day. Use this function to show the customer what their reward earnings would have looked like, if they had a given card.
+   cardType must be one of [travel, sports, business, family]. Use limit and offset to control how many days to return when to start.
+  """
+  PotentialRewardsByDay(customerId: GraphQLBigInteger!, cardType: String!, limit: Int = 10, offset: Int = 0): [PotentialRewardsByDay!]
+  """
+  Returns the total awards a customer earned by day starting from the most recent day.
+    Use limit and offset to control how many days to return and when to start.
+  """
+  RewardsByDay(customerId: GraphQLBigInteger!, limit: Int = 10, offset: Int = 0): [RewardsByDay!]
+  "Returns the total amount of rewards the customer could have earned for each type of credit card the customer does not yet have. Use this function to determine which credit card type to recommend to a customer."
+  TotalPotentialReward(customerId: GraphQLBigInteger!, limit: Int = 10, offset: Int = 0): [TotalPotentialReward!]
+  "Returns the total amount of rewards the customer has earned to date and the time since when they eared rewards"
+  TotalReward(customerId: GraphQLBigInteger!, limit: Int = 10, offset: Int = 0): [TotalReward!]
+  """
+  Returns all the potential rewards a customer could have earned since fromTime (inclusive) and until toTime (exclusive) for the given card type. Use this function to show customers the rewards they would have earned if they had the given card.
+    cardType must be one of [travel, sports, business, family].
+    fromTime and toTime must be RFC-3339 compliant date time scalar. Both must be the start of a day, e.g. 2024-01-19T00:00:00-00:00.
+  """
+  PotentialRewards(customerId: GraphQLBigInteger!, cardType: String!, fromTime: DateTime!, toTime: DateTime!, limit: Int = 10, offset: Int = 0): [CustomerPotentialRewards!]
+  """
+  Returns all the rewards that a customer (identified by customerId) has earned since fromTime (inclusive) until toTime (exclusive)..
+    fromTime and toTime must be RFC-3339 compliant date time scalar. Both must be the start of a day, e.g. 2024-01-19T00:00:00-00:00.
+  """
+  Rewards(customerId: GraphQLBigInteger!, fromTime: DateTime!, toTime: DateTime!, limit: Int = 10, offset: Int = 0): [CustomerRewards!]
+}
+
+type RewardsByDay {
+  customerId: GraphQLBigInteger!
+  timeDay: DateTime!
+  total_reward: Float!
+}
+
+type TotalPotentialReward {
+  customerId: GraphQLBigInteger!
+  cardType: String!
+  total_reward: Float!
+  since_time: DateTime!
+}
+
+type TotalReward {
+  customerId: GraphQLBigInteger!
+  total_reward: Float!
+  since_time: DateTime!
+}
