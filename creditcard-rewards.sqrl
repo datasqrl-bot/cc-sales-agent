@@ -29,10 +29,16 @@ CustomerRewards := SELECT transactionId, customerId, cardNo, cardType, time, amo
                   WHERE cardType = rewardCardType;
 
 /* Part 2a: Query and Analyze Rewards */
-Rewards(@customerid: BIGINT, @fromTime: `timestamp`, @toTime: `timestamp`) :=
+/**
+  Returns the credit card rewards earned by a customer within the given time interval
+ */
+Rewards(@customerid: BIGINT, @fromTime: TIMESTAMP, @toTime: TIMESTAMP) :=
 SELECT * FROM CustomerRewards WHERE customerid = @customerid AND @fromTime <= time AND @toTime > time
 ORDER BY time DESC;
 
+/**
+  Returns the total rewards the customer has earned
+ */
 TotalReward := SELECT customerId, SUM(reward) AS total_reward,
                               MIN(time) as since_time
                        FROM CustomerRewards GROUP BY customerId;
@@ -48,10 +54,16 @@ _CustomerPotentialRewards := SELECT transactionId, customerId, rewardCardType, t
                             FROM _CustomerTransactionRewardsByCard
                             WHERE cardType != rewardCardType;
 
-PotentialRewards(@customerid: BIGINT, @cardType: STRING, @fromTime: `timestamp`, @toTime: `timestamp`) :=
+/**
+  Returns the credit card rewards a given customer would have earned for a given card the given time interval
+ */
+PotentialRewards(@customerid: BIGINT, @cardType: STRING, @fromTime: TIMESTAMP, @toTime: TIMESTAMP) :=
 SELECT * FROM _CustomerPotentialRewards WHERE customerid = @customerid AND @fromTime <= time AND @toTime > time
 AND rewardCardType = @cardType ORDER BY time DESC;
 
+/**
+  Returns the total rewards a customer would have earned for a given card
+ */
 TotalPotentialReward := SELECT customerId, rewardCardType AS cardType, SUM(reward) AS total_reward,
                                        MIN(time) as since_time
                                 FROM _CustomerPotentialRewards
