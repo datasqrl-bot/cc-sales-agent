@@ -1,5 +1,5 @@
 ---
-name: "cardAssignment"
+name: "CardAssignment"
 schema_version: "1"
 partial_schema: false
 columns:

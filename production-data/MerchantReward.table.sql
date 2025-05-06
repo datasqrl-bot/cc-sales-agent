@@ -1,0 +1,11 @@
+CREATE TABLE MerchantReward (
+    merchantId BIGINT,
+    updatedTime TIMESTAMP,
+    PRIMARY KEY (merchantId, updatedTime) NOT ENFORCED,
+    WATERMARK FOR updatedTime AS updatedTime - INTERVAL '1' SECOND
+) WITH (
+    'format' = 'flexible-json',
+    'path' = '${DATA_PATH}/MerchantReward.jsonl',
+    'source.monitor-interval' = '10 min',
+    'connector' = 'filesystem'
+);

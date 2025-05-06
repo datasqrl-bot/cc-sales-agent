@@ -1,5 +1,5 @@
 ---
-name: "merchantReward"
+name: "MerchantReward"
 schema_version: "1"
 partial_schema: false
 columns:
